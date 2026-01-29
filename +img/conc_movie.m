@@ -43,7 +43,6 @@ iter = nplanes*2;
 nframes = size(imdata,3)/iter; 
 movie = zeros(size(imdata,1),size(imdata,2),3,nframes); 
 
-
 for f = 1:size(imdata,3)/ iter % for each frame in time of movie 
     imdata_count = 0; 
 
@@ -53,12 +52,9 @@ for f = 1:size(imdata,3)/ iter % for each frame in time of movie
         for color = 1:2
             imdata_count = imdata_count+1; 
             %if color == 1% 2 colors for each plane
-                
                 quadrant=imdata(:,:,imdata_count); 
                 movie(r,c,color,f)=quadrant;
             %end
-
-            
         end
     end
 

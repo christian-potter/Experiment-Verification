@@ -6,88 +6,10 @@
 %% DISPLAY MEAN GREEN FLUORESCENCE AND TSERIES BOUNDARIES 
 
 
-%% MAKE VARIABLES 
-nplanes = 4; 
-xy = nan(192,512); 
 
-if nplanes == 4
-    concimg = [xy,xy;xy,xy]; 
-end
-
-%%
-direct = dir('/Volumes/Warwick/DRGS project/#542 3-25-25/SDH/Functional/Split');
-ts_frames = 5; 
-
-avgmovie = nan(size(concimg,1),size(concimg,2),3,length(direct)); 
-tscount = 0;
-for i =1:length(direct)
-    if contains(direct(i).name,'.tif') % if file is a .tif
-        tsnum = str2double(direct(i).name(6:8)); 
-
-        tif_file = [direct(i).folder,'/',direct(i).name]; 
-        imdata= bigread4(tif_file);
-        
-        movie = img.conc_movie(concimg,imdata,nplanes); 
-
-        avgts = img.average_movie(movie,1,tsnum); 
-        avgmovie(:,:,:,i) = avgts; 
-  
-    end
-end
-%% DELETE BLANK FRAMES 
-m= avgmovie; 
-delete_vect = false(1,size(avgmovie,3)); 
-
-for l = 1:size(avgmovie,3)
-    if isnan(avgmovie(1,1,l))
-        delete_vect(l)=true; 
-    end
-end
-avgmovie(:,:,delete_vect)=[]; 
 %% 
-%% ADJUST BRIGHTNESS AND CONTRAST OF MOVIE
-brightness_factor = .2; % Factor to increase brightness (1 for no change)
-contrast_factor = 1;    % Factor to increase contrast (1 for no change)
 
-
-
-% for m = 1:size(avgmovie, 3)
-%     for x = 1:size(avgmovie, 1)
-%         for y = 1:size(avgmovie, 2)
-%             % Adjust brightness
-%             adjmovie(x, y, m) = avgmovie(x, y, m) * brightness_factor;
-%             % Adjust contrast
-%             adjmovie(x, y, m) = ((avgmovie(x, y, m) - 0.5) * contrast_factor) + 0.5;
-%             % % Clip values to be in the valid range [0, 1]
-%             % avgmovie(x, y, m) = min(max(avgmovie(x, y, m), 0), 1);
-%         end
-%     end
-% end
-
-for f = 1:size(avgmovie, 4)
-    for m = 1:size(avgmovie, 3)
-        for x = 1:size(avgmovie, 1)
-            for y = 1:size(avgmovie, 2)
-                % Adjust brightness
-                adjmovie(x, y, m, f) = avgmovie(x, y, m, f) * brightness_factor;
-                % Adjust contrast
-                adjmovie(x, y, m, f) = ((adjmovie(x, y, m, f) - 0.5) * contrast_factor) + 0.5;
-                % Clip values to be in the valid range [0, 1]
-                %adjmovie(x, y, m, f) = min(max(adjmovie(x, y, m, f), 0), 1);
-            end
-        end
-    end
-end
-%%
-for f = 1:size(avgmovie,4)
-    adjmovie(:,:,1,f) = imadjust(avgmovie(:,:,1,f)); 
-    adjmovie(:,:,2,f) = imadjust(avgmovie(:,:,2,f)); 
-end
-
-%%
-tv = TiffViewer(adjmovie,3); 
-
-%%
+%% VIEW MOVIE 
 tv = TiffViewer(avgmovie,3); 
 
 %% SUBSELECT FOLDER TO DETERMINE IF THAT WAS AFFECTED FRAMES 
