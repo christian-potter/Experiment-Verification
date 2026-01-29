@@ -49,32 +49,15 @@ avgmovie(:,:,delete_vect)=[];
 brightness_factor = .2; % Factor to increase brightness (1 for no change)
 contrast_factor = 1;    % Factor to increase contrast (1 for no change)
 
-
-
-% for m = 1:size(avgmovie, 3)
-%     for x = 1:size(avgmovie, 1)
-%         for y = 1:size(avgmovie, 2)
-%             % Adjust brightness
-%             adjmovie(x, y, m) = avgmovie(x, y, m) * brightness_factor;
-%             % Adjust contrast
-%             adjmovie(x, y, m) = ((avgmovie(x, y, m) - 0.5) * contrast_factor) + 0.5;
-%             % % Clip values to be in the valid range [0, 1]
-%             % avgmovie(x, y, m) = min(max(avgmovie(x, y, m), 0), 1);
-%         end
-%     end
-% end
-
-for f = 1:size(avgmovie, 4)
-    for m = 1:size(avgmovie, 3)
-        for x = 1:size(avgmovie, 1)
-            for y = 1:size(avgmovie, 2)
-                % Adjust brightness
-                adjmovie(x, y, m, f) = avgmovie(x, y, m, f) * brightness_factor;
-                % Adjust contrast
-                adjmovie(x, y, m, f) = ((adjmovie(x, y, m, f) - 0.5) * contrast_factor) + 0.5;
-                % Clip values to be in the valid range [0, 1]
-                %adjmovie(x, y, m, f) = min(max(adjmovie(x, y, m, f), 0), 1);
-            end
+for m = 1:size(avgmovie, 3)
+    for x = 1:size(avgmovie, 1)
+        for y = 1:size(avgmovie, 2)
+            % Adjust brightness
+            adjmovie(x, y, m) = avgmovie(x, y, m) * brightness_factor;
+            % Adjust contrast
+            adjmovie(x, y, m) = ((avgmovie(x, y, m) - 0.5) * contrast_factor) + 0.5;
+            % % Clip values to be in the valid range [0, 1]
+            % avgmovie(x, y, m) = min(max(avgmovie(x, y, m), 0), 1);
         end
     end
 end
@@ -82,13 +65,14 @@ end
 for f = 1:size(avgmovie,4)
     adjmovie(:,:,1,f) = imadjust(avgmovie(:,:,1,f)); 
     adjmovie(:,:,2,f) = imadjust(avgmovie(:,:,2,f)); 
+
+
+
 end
 
 %%
-tv = TiffViewer(adjmovie,3); 
-
-%%
 tv = TiffViewer(avgmovie,3); 
+
 
 %% SUBSELECT FOLDER TO DETERMINE IF THAT WAS AFFECTED FRAMES 
 

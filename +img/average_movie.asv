@@ -1,0 +1,47 @@
+function averagedMovie = average_movie(movie, numFrames, numberToAdd)
+% grayscale     
+    % [xpixels, ypixels, totalFrames] = size(movie);
+    % 
+    % % Calculate the number of frames to average
+    % framesPerSubset = totalFrames / numFrames;
+    % averagedMovie = zeros(xpixels, ypixels, numFrames, 'uint8');
+    % 
+    % % Loop through the number of subsets
+    % for i = 1:numFrames
+    %     startFrame = round((i - 1) * framesPerSubset) + 1;
+    %     endFrame = round(i * framesPerSubset);
+    % 
+    %     % Average the frames in the current subset
+    %     frameSubset = movie(:, :, startFrame:endFrame);
+    %     averagedFrame = mean(frameSubset, 3);
+    % 
+    %     % Convert to uint8
+    %     averagedMovie(:, :, i) = uint8(averagedFrame);
+    % 
+    %     averagedMovie(:, :, i) = img.addNumberShape(averagedMovie(:, :, i), numberToAdd); 
+    % end
+
+    %% RGB 
+    [xpixels, ypixels, rgbChannels, totalFrames] = size(movie);
+    
+    % Calculate the number of frames to average
+    framesPerSubset = totalFrames / numFrames;
+    averagedMovie = zeros(xpixels, ypixels, rgbChannels, numFrames, 'uint8');
+    
+    % Loop through the number of subsets
+    for i = 1:numFrames
+        startFrame = round((i - 1) * framesPerSubset) + 1;
+        endFrame = round(i * framesPerSubset);
+        
+        % Average the frames in the current subset
+        frameSubset = movie(:, :, :, startFrame:endFrame);
+        averagedFrame = mean(frameSubset, 4);
+        
+        % Convert to uint8
+        averagedMovie(:, :, :, i) = uint8(averagedFrame);
+        
+        averagedMovie(:, :, :, i) = img.addNumberShape(averagedMovie(:, :, :, i), numberToAdd); 
+    end
+
+
+end
