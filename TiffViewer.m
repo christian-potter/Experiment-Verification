@@ -1,0 +1,2 @@
+classdef TiffViewer < MovieViewer
+end
