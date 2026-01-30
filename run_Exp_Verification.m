@@ -1,17 +1,34 @@
-%% GOAL
-% get a few average images for each plane for each tseries and show movie
-% to determine bad time points of the recording 
+%% COMPARE FOLDER DIRECTORIES
 
+directory_lists= get.directories(548) ;
 
-%% DISPLAY MEAN GREEN FLUORESCENCE AND TSERIES BOUNDARIES 
+    
+%% MAKE MOVIE OF 2P TIFFS 
+nplanes = 4; dsnum = 541; 
+[avgmovie,tslist] =img.split_movie(nplanes,dsnum); 
 
-
-
-%% 
+%% ADJUST
+brightness = 1; contrast = 1;  
+[avgmovie,allframes] = img.adjust_movie(brightness,contrast,avgmovie); 
 
 %% VIEW MOVIE 
 tv = TiffViewer(avgmovie,3); 
 
-%% SUBSELECT FOLDER TO DETERMINE IF THAT WAS AFFECTED FRAMES 
+%% REMOVE TSERIES + REPLAY WITH REMOVED 
+delete_tseries =[]; 
+clipped_movie = img.clip_movie(delete_tseries,tslist,avgmovie); 
+brightness = 1; contrast =1; 
+clipped_movie= img.adjust_movie(brightness,contrast,clipped_movie); 
 
-%% 
+tv = TiffViewer(clipped_movie,3); 
+
+%% COMPRESS THORSYNC 
+[tsync] = utils.compress_tsync(dsnum,'DRGS','Warwick'); 
+
+%% SAVE 
+utils.save_Experiment_Verification(dsnum,tsync,deleted_folders,avgmovie); 
+
+%% CHOOSE REFERENCE IMAGE 
+
+
+

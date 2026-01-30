@@ -6,13 +6,15 @@ arguments
     avgmovie double % movie to be adjusted
 end
 %% DESCRIPTION
-% 
+% Change image paraemters in avgmovie
 
 %% NOTES 
 %* currently does not affect .tif much. need to understand MovieViewer to
 % understand why 
 
 %% DELETE BLANK FRAMES 
+%shouldn't need this if img.split_movie is working appropriately 
+
 delete_vect = false(1,size(avgmovie,3)); 
 
 for l = 1:size(avgmovie,3)

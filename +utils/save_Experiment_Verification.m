@@ -1,0 +1,22 @@
+function [] = save_Experiment_Verification(dsnum,tsync,deleted_folders)
+
+%% 
+dsnum = num2str(dsnum); 
+
+
+if ismac
+    base = ['/Volumes/Warwick/DRGS project/#',dsnum,'/SDH/Processed/']; 
+elseif ispc
+    base = ['\\Shadowfax\Warwick\DRGS project\#',dsnum,'\SDH\Processed\']; 
+end
+
+
+save([base,'tsync.mat'],'tsync')
+save([base,'deleted_folder.mat'],'deleted_folders.mat')
+
+save([base,''])
+
+
+%%
+
+

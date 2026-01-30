@@ -1,4 +1,4 @@
-function [avgmovie,all_frames] =split_movie(nplanes,dsnum)
+function [avgmovie] =split_movie(nplanes,dsnum)
 arguments
     nplanes double % scalar for number of planes (only 4 works)
     % ** rows x cols, so yx 
@@ -55,8 +55,11 @@ for i =1:length(direct)
         tif_file = [direct(i).folder,'/',direct(i).name]; 
         imdata= bigread4(tif_file);
         
-        movie = img.conc_movie(concimg,imdata,nplanes);
-        all_frames = cat(4, all_frames, movie); 
+        
+        movie = img.conc_movie(concimg,imdata,nplanes); 
+        allframes = [allframes,movie()
+        
+        all_frames = cat(4, all_frames, movie);
         avgts = img.average_movie(movie,ts_frames,tsnum); 
         avgmovie(:,:,:,i) = avgts; 
         tslist(i) = tsnum; 

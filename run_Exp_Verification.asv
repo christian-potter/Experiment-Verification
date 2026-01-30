@@ -1,79 +1,34 @@
-%% GOAL
-% get a few average images for each plane for each tseries and show movie
-% to determine bad time points of the recording 
+%% COMPARE FOLDER DIRECTORIES
 
+folder_list= get.directories(541) ;
 
-%% DISPLAY MEAN GREEN FLUORESCENCE AND TSERIES BOUNDARIES 
+    
+%% MAKE MOVIE OF 2P TIFFS 
+nplanes = 4; dsnum = 541; 
+[avgmovie,tslist] =img.split_movie(nplanes,dsnum); 
 
+%% ADJUST
+brightness = 1; contrast = 1;  
+[avgmovie,allframes] = img.adjust_movie(brightness,contrast,avgmovie); 
 
-%% MAKE VARIABLES 
-nplanes = 4; 
-xy = nan(192,512); 
-
-if nplanes == 4
-    concimg = [xy,xy;xy,xy]; 
-end
-
-%%
-direct = dir('/Volumes/Warwick/DRGS project/#542 3-25-25/SDH/Functional/Split');
-ts_frames = 5; 
-
-avgmovie = nan(size(concimg,1),size(concimg,2),3,length(direct)); 
-tscount = 0;
-for i =1:length(direct)
-    if contains(direct(i).name,'.tif') % if file is a .tif
-        tsnum = str2double(direct(i).name(6:8)); 
-
-        tif_file = [direct(i).folder,'/',direct(i).name]; 
-        imdata= bigread4(tif_file);
-        
-        movie = img.conc_movie(concimg,imdata,nplanes); 
-
-        avgts = img.average_movie(movie,1,tsnum); 
-        avgmovie(:,:,:,i) = avgts; 
-  
-    end
-end
-%% DELETE BLANK FRAMES 
-m= avgmovie; 
-delete_vect = false(1,size(avgmovie,3)); 
-
-for l = 1:size(avgmovie,3)
-    if isnan(avgmovie(1,1,l))
-        delete_vect(l)=true; 
-    end
-end
-avgmovie(:,:,delete_vect)=[]; 
-%% 
-%% ADJUST BRIGHTNESS AND CONTRAST OF MOVIE
-brightness_factor = .2; % Factor to increase brightness (1 for no change)
-contrast_factor = 1;    % Factor to increase contrast (1 for no change)
-
-for m = 1:size(avgmovie, 3)
-    for x = 1:size(avgmovie, 1)
-        for y = 1:size(avgmovie, 2)
-            % Adjust brightness
-            adjmovie(x, y, m) = avgmovie(x, y, m) * brightness_factor;
-            % Adjust contrast
-            adjmovie(x, y, m) = ((avgmovie(x, y, m) - 0.5) * contrast_factor) + 0.5;
-            % % Clip values to be in the valid range [0, 1]
-            % avgmovie(x, y, m) = min(max(avgmovie(x, y, m), 0), 1);
-        end
-    end
-end
-%%
-for f = 1:size(avgmovie,4)
-    adjmovie(:,:,1,f) = imadjust(avgmovie(:,:,1,f)); 
-    adjmovie(:,:,2,f) = imadjust(avgmovie(:,:,2,f)); 
-
-
-
-end
-
-%%
+%% VIEW MOVIE 
 tv = TiffViewer(avgmovie,3); 
 
+%% REMOVE TSERIES + REPLAY WITH REMOVED 
+delete_tseries =[]; 
+clipped_movie = img.clip_movie(delete_tseries,tslist,avgmovie); 
+brightness = 1; contrast =1; 
+clipped_movie= img.adjust_movie(brightness,contrast,clipped_movie); 
 
-%% SUBSELECT FOLDER TO DETERMINE IF THAT WAS AFFECTED FRAMES 
+tv = TiffViewer(clipped_movie,3); 
 
-%% 
+%% COMPRESS THORSYNC 
+[tsync] = utils.compress_tsync(dsnum,'DRGS','Warwick'); 
+
+%% SAVE 
+utils.save_Experiment_Verification(dsnum,tsync,deleted_folders,avgmovie); 
+
+%% CHOOSE REFERENCE IMAGE 
+
+
+
