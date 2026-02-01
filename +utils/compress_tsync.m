@@ -1,8 +1,8 @@
 function [tsync] = compress_tsync(dsnum,project,user)
 arguments
     dsnum double
-    project string
-    user string 
+    project char
+    user char
 end
 
 %% DESCRIPTION 
@@ -13,7 +13,7 @@ end
 
 %% GET FOLDER DIRECTORY
 if ismac 
-    pathname = []; 
+    pathname = ['/Volumes/Warwick/DRGS project/#550/SDH/Functional/ThorSync']; 
 end
 
 % get directory and then return to original folder 
@@ -27,7 +27,7 @@ ts_start=0;
 count = 1; 
 for d = 1:length(direct)
     if contains(direct(d).name,'TS')
-        filename = [direct(d).folder,'/',direct(d).name]; 
+        filename = [direct(d).folder,'/',direct(d).name,'/Episode_0000.h5']; 
         disp(['Processing ', filename])
         [ntsync]= md.read_h5(filename);
         ntsync = utils.averageByFramecount(ntsync,6); 
@@ -43,22 +43,22 @@ for d = 1:length(direct)
     end
 end
 
-%% FIND FRAMES WHERE NEW TSERIES BEGINS 
-tseries_breaks=find(diff(tsync.tseries)==1);
-figure
-hold on 
-plot(tsync.peltier)
-plot(tsync.mforce)
-xline(tseries_breaks)
-utils.sf
-
-%% PLOT TSERIES BREAKS TO VERIFY 
-tseries_breaks=find(diff(tsync.tseries)==1);
-figure
-plot(tsync.mforce)
-hold on 
-plot(mean(dF_F,1))
-xline(tseries_breaks)
-xline(find(ops.badframes==1),'color','r')
+% %% FIND FRAMES WHERE NEW TSERIES BEGINS 
+% tseries_breaks=find(diff(tsync.tseries)==1);
+% figure
+% hold on 
+% plot(tsync.peltier)
+% plot(tsync.mforce)
+% xline(tseries_breaks)
+% utils.sf
+% 
+% %% PLOT TSERIES BREAKS TO VERIFY 
+% tseries_breaks=find(diff(tsync.tseries)==1);
+% figure
+% plot(tsync.mforce)
+% hold on 
+% plot(mean(dF_F,1))
+% xline(tseries_breaks)
+% xline(find(ops.badframes==1),'color','r')
 
 

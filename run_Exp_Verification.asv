@@ -1,6 +1,6 @@
 %% COMPARE FOLDER DIRECTORIES
 
-folder_list= get.directories(541) ;
+directory_lists= get.directories(550) ;
 
     
 %% MAKE MOVIE OF 2P TIFFS 
@@ -26,9 +26,86 @@ tv = TiffViewer(clipped_movie,3);
 [tsync] = utils.compress_tsync(dsnum,'DRGS','Warwick'); 
 
 %% SAVE 
-utils.save_Experiment_Verification(dsnum,tsync,deleted_folders,avgmovie); 
+avg
+utils.save_Experiment_Verification(dsnum,tsync,deleted_folders,avgmovie,folder_list); 
 
 %% CHOOSE REFERENCE IMAGE 
 
 
+%%  FILL IN OPS PARAMETERS 
+% sample_suite2p_params.m
+% Fully-specified sample parameter struct "p" for make_suite2p_ops_from_params()
 
+p = struct();
+
+% -------------------- Required-ish --------------------
+p.outDir    = '/Volumes/Potter';                 % output directory for ops.* files
+p.data_path = {"D:\example\data\tiffs_session1"};       % OR use p.tiff_list (see below)
+p.tiff_list = {};                                      % leave empty if using data_path
+
+% -------------------- Acquisition --------------------
+p.nplanes         = 1;          % number of planes
+p.nchannels       = 2;          % number of channels in file
+p.functional_chan = 1;          % channel used for detection (1-based)
+p.fs              = 30;         % frame rate per plane (Hz)
+
+p.do_bidiphase    = true;       % estimate bidi phase
+p.bidiphase       = 0;          % set if known, else 0
+
+p.nimg_init       = 300;        % frames used for init
+p.batch_size      = 200;        % registration batch size
+
+% -------------------- Registration --------------------
+p.do_registration   = true;      % run registration
+p.nonrigid          = true;      % nonrigid registration on/off
+p.smooth_sigma      = 1.15;      % spatial smoothing for registration
+p.smooth_sigma_time = 0;         % temporal smoothing for registration (0 disables)
+p.maxregshift       = 0.10;      % max rigid shift fraction of FOV
+p.align_by_chan     = 1;         % channel used for registration alignment (1-based)
+p.th_badframes      = 1.0;       % bad frame threshold
+
+% Nonrigid params (used if nonrigid=true)
+p.block_size      = [128 128];   % [X Y] block size
+p.snr_thresh      = 1.2;         % SNR threshold
+p.maxregshiftNR   = 5;           % max nonrigid shift parameter (Suite2p convention)
+
+% -------------------- ROI Detection --------------------
+p.do_detection      = true;      % run ROI detection
+p.sparse_mode       = false;     % sparse mode on/off
+p.diameter          = 12;        % cell diameter (px); can be scalar or [X Y]
+p.spatial_scale     = 0;         % spatial scale (0 lets suite2p choose internally)
+p.threshold_scaling = 1.0;       % detection threshold scaling
+p.max_overlap       = 0.75;      % maximum overlap allowed
+p.high_pass         = 100;       % high-pass filter cutoff
+
+% -------------------- Neuropil / Baseline / Deconv --------------------
+p.neuropil_extract        = true;     % extract neuropil
+p.inner_neuropil_radius   = 2;        % inner radius (px)
+p.min_neuropil_pixels     = 350;      % minimum neuropil pixels
+
+p.baseline     = "maximin";           % 'maximin' / 'prctile' / 'constant'
+p.win_baseline = 60;                  % baseline window (frames)
+p.sig_baseline = 10;                  % baseline smoothing sigma
+
+p.spikedetect  = true;                % run spike deconvolution
+p.neucoeff     = 0.7;                 % neuropil coefficient
+
+% -------------------- Outputs --------------------
+p.save_mat       = true;     % save MATLAB outputs (and used by our writer fallback)
+p.delete_bin     = false;    % delete binary after run
+p.keep_movie_raw = false;    % keep raw movie
+
+p.write_json     = true;     % write ops.json alongside ops.npy/ops.mat
+
+% -------------------- Compatibility extras --------------------
+p.chan2_thres    = 0.65;     % secondary channel threshold (if used)
+p.reg_tif        = false;    % write registered tif
+p.allow_overlap  = true;     % allow overlaps
+
+% -------------------- Alternate input example --------------------
+% If you prefer explicit TIFF listing instead of data_path, do:
+% p.data_path = {};
+% p.tiff_list = {"D:\example\data\file1.tif", "D:\example\data\file2.tif"};
+%% GEREATE .OPS FILE 
+
+[ops, written] = make_suite2p_ops_from_params(p); 
