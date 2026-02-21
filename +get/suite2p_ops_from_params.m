@@ -1,4 +1,4 @@
-function [ops, written] = make_suite2p_ops_from_params(p)
+function [ops, written] = suite2p_ops_from_params(p)
 % make_suite2p_ops_from_params
 % Build Suite2p ops struct from an input parameter struct and write to disk.
 %

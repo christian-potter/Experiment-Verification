@@ -12,8 +12,9 @@ end
 % CTP- 11-27-2025
 
 %% GET FOLDER DIRECTORY
+dsnum = num2str(dsnum); 
 if ismac 
-    pathname = ['/Volumes/Warwick/DRGS project/#550/SDH/Functional/ThorSync']; 
+    pathname = ['/Volumes/Warwick/DRGS/#',dsnum,'/SDH/Functional/ThorSync']; 
 end
 
 % get directory and then return to original folder 

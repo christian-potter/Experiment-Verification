@@ -1,12 +1,6 @@
-function [] = save_files(dsnum,project,user,variable_list,varargin)
-
-%    dsnum double 
- %   project string 
-  %  user string 
-   % variable_list cell 
-    %varargin 
-
-
+function [] = save_experiment_verification(dsnum,project,user,tseries_md,zstack,zstack_md)
+%% NOTES
+%* need to add full list of variables 
 
 %% DESCRIPTION 
 % Function used by data_organization script to save variables to the
@@ -15,12 +9,16 @@ function [] = save_files(dsnum,project,user,variable_list,varargin)
 % all entered variables should go at the end and correspond to the order
 % entered in variable_list 
 
+%% DEFINE ORDER OF VARIABLES
+
+%variable_list={'tseries_frames','ref','tsync','zstack','zstack_md','tseries_md'}; 
+variable_list = {'tseries_md','zstack','zstack_md'};
 
 
 %% CREATE SAVE PATH 
 
 if ismac 
-    save_path = ['/Volumes/',user,'/',project,'/',num2str(dsnum)]; 
+    save_path = ['/Volumes/',user,'/',project,'/#',num2str(dsnum)]; 
 else
     save_path=[];
     disp('Windows File Path Not Specified')
@@ -29,14 +27,12 @@ end
 
 %% SAVE VARIABLES TO FILE 
 
-if length(varargin)==length(variable_list)
-    for v = 1:length(variable_list)
-        save(variable_list{v},[save_path,'/',variable_list{v}])
-    end
+%  this is actually for data_organization 
 
-else 
-    disp('Entered Variables Must be Same Number as Entered in variable_list')
-end
+% save([save_path,'/',variable_list{1}],"tseries_md")
+% save([save_path,'/',variable_list{2}],"zstack")
+% save([save_path,'/',variable_list{3}],"zstack_md")
+% 
 
 
 end

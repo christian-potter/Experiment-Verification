@@ -1,0 +1,20 @@
+%% MAKE MOVIE OF 2P TIFFS 
+nplanes = 4; dsnum = 540; 
+tic
+[avgmovie,tslist] =img.split_movie(nplanes,dsnum); 
+toc
+
+%% ADJUST
+brightness = 1; contrast = 1;  
+[avgmovie,allframes] = img.adjust_movie(brightness,contrast,avgmovie); 
+
+%% VIEW MOVIE 
+tv = TiffViewer(avgmovie,3); 
+
+%% REMOVE TSERIES + REPLAY WITH REMOVED 
+delete_tseries =[]; 
+clipped_movie = img.clip_movie(delete_tseries,tslist,avgmovie); 
+brightness = 1; contrast =1; 
+clipped_movie= img.adjust_movie(brightness,contrast,clipped_movie); 
+
+tv = TiffViewer(clipped_movie,3); 

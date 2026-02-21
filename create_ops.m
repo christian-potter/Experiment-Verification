@@ -1,36 +1,5 @@
-%% COMPARE FOLDER DIRECTORIES
-
-directory_lists= get.directories(550) ;
-folder_list=directory_lists; 
-    
-%% MAKE MOVIE OF 2P TIFFS 
-nplanes = 4; dsnum = 541; 
-[avgmovie,tslist] =img.split_movie(nplanes,dsnum); 
-
-%% ADJUST
-brightness = 1; contrast = 1;  
-[avgmovie,allframes] = img.adjust_movie(brightness,contrast,avgmovie); 
-
-%% VIEW MOVIE 
-tv = TiffViewer(avgmovie,3); 
-
-%% REMOVE TSERIES + REPLAY WITH REMOVED 
-delete_tseries =[]; 
-clipped_movie = img.clip_movie(delete_tseries,tslist,avgmovie); 
-brightness = 1; contrast =1; 
-clipped_movie= img.adjust_movie(brightness,contrast,clipped_movie); 
-
-tv = TiffViewer(clipped_movie,3); 
-
-%% COMPRESS THORSYNC 
-[tsync] = utils.compress_tsync(dsnum,'DRGS','Warwick'); 
-
-%% SAVE 
-avgmovie=[]; 
-utils.save_Experiment_Verification(dsnum,tsync,deleted_folders,avgmovie,folder_list); 
-
 %% CHOOSE REFERENCE IMAGE 
-
+% ** STILL NEED TO FIGURE OUT **
 
 %%  FILL IN OPS PARAMETERS 
 % sample_suite2p_params.m
@@ -108,4 +77,4 @@ p.allow_overlap  = true;     % allow overlaps
 % p.tiff_list = {"D:\example\data\file1.tif", "D:\example\data\file2.tif"};
 %% GEREATE .OPS FILE 
 
-[ops, written] = make_suite2p_ops_from_params(p); 
+[ops, written] = get.suite2p_ops_from_params(p); 
