@@ -1,8 +1,9 @@
-function [tsync] = compress_tsync(dsnum,project,user)
+function [tsync] = compress_tsync(dsnum,project,user,nframes)
 arguments
     dsnum double
     project char
     user char
+    nframes double % number of frames to average 
 end
 
 %% DESCRIPTION 
@@ -31,7 +32,7 @@ for d = 1:length(direct)
         filename = [direct(d).folder,'/',direct(d).name,'/Episode_0000.h5']; 
         disp(['Processing ', filename])
         [ntsync]= md.read_h5(filename);
-        ntsync = utils.averageByFramecount(ntsync,6); 
+        ntsync = utils.averageByFramecount(ntsync,nframes); 
         ntsync.tseries = ones(size(ntsync,1),1)*count; 
         if ts_start ==0
             tsync = ntsync; 
